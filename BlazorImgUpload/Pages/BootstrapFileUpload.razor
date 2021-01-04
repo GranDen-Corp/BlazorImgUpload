@@ -1,0 +1,24 @@
+﻿<div class="custom-file" style="--upload-btn-text: '@(ButtonLabel)';">
+    <InputFile id="bootstrapCustomFileUpload"
+               class="custom-file-input" 
+               OnChange="OnInputFileChange"
+               accept="@AcceptPattern"/>
+    <label class="custom-file-label" for="bootstrapCustomFileUpload">@Prompt</label>
+</div>
+
+@code {
+    [Parameter]
+    public string Prompt { get; set; } = "Choose file";
+
+    [Parameter]
+    public string ButtonLabel { get; set; } = "Browse";
+
+    [Parameter]
+    public string AcceptPattern { get; set; } = "image/*";
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        Prompt = e.File.Name;
+    }
+
+}
