@@ -1,9 +1,11 @@
-﻿<div class="custom-file" style="--upload-btn-text: '@(ButtonLabel)';">
+﻿<div class="custom-file">
     <InputFile id="bootstrapCustomFileUpload"
-               class="custom-file-input" 
+               class="custom-file-input"
                OnChange="OnInputFileChange"
-               accept="@AcceptPattern"/>
-    <label class="custom-file-label" for="bootstrapCustomFileUpload">@Prompt</label>
+               accept="@AcceptPattern" />
+    <label for="bootstrapCustomFileUpload" 
+           class="custom-file-label" 
+           data-browse="@ButtonLabel">@Prompt</label>
 </div>
 
 @code {

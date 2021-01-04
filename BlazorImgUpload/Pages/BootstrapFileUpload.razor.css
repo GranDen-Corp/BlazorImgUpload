@@ -2,9 +2,3 @@
 ::deep .custom-file-input {
     cursor: pointer;
 }
-
-/* ReSharper disable once CssBrowserCompatibility */
-.custom-file-input ~ .custom-file-label::after {
-    /* ReSharper disable once CssBrowserCompatibility */
-    content: var(--upload-btn-text);
-}
