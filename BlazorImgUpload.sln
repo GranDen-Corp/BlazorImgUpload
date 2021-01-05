@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorImgUpload", "BlazorImgUpload\BlazorImgUpload.csproj", "{646CAA7B-FFDC-4284-A9C5-0172B1DAF3FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorImgUpload", "examples\BlazorImgUpload\BlazorImgUpload.csproj", "{646CAA7B-FFDC-4284-A9C5-0172B1DAF3FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
