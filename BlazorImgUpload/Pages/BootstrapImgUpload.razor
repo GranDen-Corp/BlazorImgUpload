@@ -1,0 +1,75 @@
+﻿@using System.Runtime.InteropServices
+@using Microsoft.JSInterop
+@using System.IO
+@inject IJSRuntime JS;
+@implements IAsyncDisposable;
+
+<div class="d-flex flex-column justify-content-center">
+    <div class="p-1">
+        <img @ref="previewImg" class="img-thumbnail"/>
+    </div>
+    <div class="p-1">
+        <div class="custom-file">
+            <InputFile id="@fileUploadId"
+                       class="custom-file-input"
+                       accept="@AcceptPattern"
+                       OnChange="OnInputFileChange"/>
+            <label for="@fileUploadId"
+                   class="custom-file-label"
+                   data-browse="@ButtonLabel">
+                @Prompt
+            </label>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Prompt { get; set; } = "Choose file";
+
+    [Parameter]
+    public string ButtonLabel { get; set; } = "Browse";
+
+    [Parameter]
+    public string AcceptPattern { get; set; } = "image/*";
+
+    [Parameter]
+    public EventCallback<InputFileChangeEventArgs> InputFileChanged { get; set; }
+
+    IJSObjectReference _blobUtilModule;
+
+    Guid fileUploadId = Guid.NewGuid();
+    ElementReference previewImg;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            var importPath = "/js/";
+            _blobUtilModule = await JS.InvokeAsync<IJSObjectReference>("import", $"{importPath}/imgPreviewUtil.js");
+
+            await _blobUtilModule.InvokeVoidAsync("hookFileUploadEvent", previewImg, fileUploadId);
+        }
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        Prompt = e.File.Name;
+        if (InputFileChanged.HasDelegate)
+        {
+            await InputFileChanged.InvokeAsync(e);
+        }
+    }
+
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_blobUtilModule != null)
+        {
+            await _blobUtilModule.DisposeAsync().ConfigureAwait(false);
+        }
+    }
+
+}

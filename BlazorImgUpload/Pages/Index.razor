@@ -2,11 +2,32 @@
 
 <h1>Blazor Image Upload Demo</h1>
 
-<fieldset class="border p-3">
-    <legend>Bootstrap type file browser</legend>
-    <form>
-        <div class="form-row align-items-center">
-            <BootstrapFileUpload Prompt="選擇檔案" ButtonLabel="瀏覽"></BootstrapFileUpload>
+<br/>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <fieldset class="border rounded p-3">
+                <legend>Bootstrap type file browser</legend>
+                <form>
+                    <div class="form-row align-items-center">
+                        <BootstrapImgUpload Prompt="選擇檔案"
+                                            ButtonLabel="瀏覽">
+                        </BootstrapImgUpload>
+                    </div>
+                </form>
+            </fieldset>
         </div>
-    </form>
-</fieldset>
+        <div class="col">
+            <fieldset class="border rounded p-3">
+                <legend>Custom Drag & Drop Image Upload</legend>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+@code {
+
+
+
+}
