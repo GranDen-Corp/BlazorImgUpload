@@ -6,7 +6,7 @@
 
 <div class="d-flex flex-column justify-content-center">
     <div class="p-1">
-        <img @ref="previewImg" class="img-thumbnail"/>
+        <img @ref="previewImg" class="@DefaultPreviewImgCSS" alt="@_prompt"/>
     </div>
     <div class="p-1">
         <div class="custom-file">
@@ -17,7 +17,7 @@
             <label for="@fileUploadId"
                    class="custom-file-label"
                    data-browse="@ButtonLabel">
-                @Prompt
+                @_prompt
             </label>
         </div>
     </div>
@@ -26,7 +26,10 @@
 @code {
 
     [Parameter]
-    public string Prompt { get; set; } = "Choose file";
+    public string DefaultPrompt { get; set; } = "Choose file";
+
+    [Parameter]
+    public string DefaultPreviewImgCSS { get; set; } = "img-thumbnail";
 
     [Parameter]
     public string ButtonLabel { get; set; } = "Browse";
@@ -37,6 +40,7 @@
     [Parameter]
     public EventCallback<InputFileChangeEventArgs> InputFileChanged { get; set; }
 
+    private string _prompt;
     IJSObjectReference _blobUtilModule;
 
     Guid fileUploadId = Guid.NewGuid();
@@ -47,20 +51,23 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            var importPath = "/js/";
+            if (string.IsNullOrEmpty(_prompt))
+            {
+                _prompt = DefaultPrompt;
+            }
+            
+            var importPath = $"./_content/{typeof(BootstrapImgUpload).Assembly.GetName().Name}";
             _blobUtilModule = await JS.InvokeAsync<IJSObjectReference>("import", $"{importPath}/imgPreviewUtil.js");
 
             await _blobUtilModule.InvokeVoidAsync("hookFileUploadEvent", previewImg, fileUploadId);
         }
     }
 
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    private Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-        Prompt = e.File.Name;
-        if (InputFileChanged.HasDelegate)
-        {
-            await InputFileChanged.InvokeAsync(e);
-        }
+        _prompt = e.File.Name;
+
+        return InputFileChanged.InvokeAsync(e);
     }
 
 

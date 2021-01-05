@@ -9,4 +9,8 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\GranDen.Blazor.Bootstrap.ImageUpload\GranDen.Blazor.Bootstrap.ImageUpload.csproj" />
+  </ItemGroup>
+
 </Project>

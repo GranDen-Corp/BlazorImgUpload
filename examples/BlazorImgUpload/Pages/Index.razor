@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using GranDen.Blazor.Bootstrap.ImageUpload;
+@using Serilog;
 
 <h1>Blazor Image Upload Demo</h1>
 
@@ -11,8 +13,9 @@
                 <legend>Bootstrap type file browser</legend>
                 <form>
                     <div class="form-row align-items-center">
-                        <BootstrapImgUpload Prompt="選擇檔案"
-                                            ButtonLabel="瀏覽">
+                        <BootstrapImgUpload DefaultPrompt="選擇檔案"
+                                            ButtonLabel="瀏覽"
+                                            InputFileChanged="OnInputFileChanged">
                         </BootstrapImgUpload>
                     </div>
                 </form>
@@ -28,6 +31,10 @@
 
 @code {
 
-
+    private void OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        Log.Information("Upload file: {@File}", e.File);
+        StateHasChanged();
+    }
 
 }

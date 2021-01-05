@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <Title>Blazor Bootstrap Image Upload</Title>
+        <Copyright>Copyright (c) 2021 GranDen Corp.(狂點軟體開發)</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/GranDen-Corp/BlazorImgUpload</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageProjectUrl>https://github.com/GranDen-Corp/BlazorImgUpload</PackageProjectUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageTags>blazor ui</PackageTags>
+        <Company>GranDen Inc.</Company>
+        <Authors>Isak Pao</Authors>
+        <Description>Bootstrap styled image upload Blazor component</Description>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DocumentationFile>./GranDen.Blazor.Bootstrap.ImageUpload.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DocumentationFile>./GranDen.Blazor.Bootstrap.ImageUpload.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="GranDen.Blazor.Bootstrap.ImageUpload.xml"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    </ItemGroup>
+
+</Project>
