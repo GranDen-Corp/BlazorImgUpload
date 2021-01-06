@@ -1,0 +1,70 @@
+﻿@page "/"
+@using Microsoft.JSInterop
+@inject IJSRuntime JS;
+@implements IAsyncDisposable;
+
+
+<h1>Crooperjs integration demo</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <fieldset class="border rounded p-3">
+                <legend>HTML5 canvas</legend>
+                <form>
+                    <div class="form-row align-items-center">
+                        <p>
+                          <InputFile id="@_fileInputId" accept="image/*" />
+                          <input type="button" @ref="cropButton" value="Crop" />
+                          <input type="button" @ref="restoreButton" value="Restore" />
+                        </p>
+                        <div>
+                          <canvas @ref="canvas">
+                            Your browser does not support the HTML5 canvas element.
+                          </canvas>
+                        </div>           
+                         
+                        <div @ref="resultContainer"></div>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+        <div class="col">
+            <fieldset class="border rounded p-3">
+                <legend>Custom Drag & Drop Image Upload</legend>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    ElementReference canvas;
+    ElementReference cropButton;
+    ElementReference restoreButton;
+    ElementReference resultContainer;
+
+    private readonly string _fileInputId = Guid.NewGuid().ToString();
+    
+    IJSObjectReference _cropperJsModule;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            var importPath = "/js/";
+            _cropperJsModule = await JS.InvokeAsync<IJSObjectReference>("import", $"{importPath}/canvasCropper.js");
+
+            await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, restoreButton,resultContainer, _fileInputId);
+        }
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_cropperJsModule != null)
+        {
+            await _cropperJsModule.DisposeAsync().ConfigureAwait(false);
+        }
+    }
+}
