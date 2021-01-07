@@ -1,4 +1,9 @@
 ﻿@page "/"
+@using System.IO;
+@using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Hosting;
+@inject IWebHostEnvironment _env;
+
 @using Microsoft.JSInterop
 @inject IJSRuntime JS;
 @implements IAsyncDisposable;
@@ -46,6 +51,7 @@
     private readonly string _fileInputId = Guid.NewGuid().ToString();
     
     IJSObjectReference _cropperJsModule;
+    DotNetObjectReference<Index> _dotNetInvokeRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -54,13 +60,48 @@
         {
             var importPath = "/js/";
             _cropperJsModule = await JS.InvokeAsync<IJSObjectReference>("import", $"{importPath}/canvasCropper.js");
+            _dotNetInvokeRef = DotNetObjectReference.Create(this);
 
-            await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, restoreButton,resultContainer, _fileInputId);
+            await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, restoreButton,resultContainer, _fileInputId, _dotNetInvokeRef);
         }
     }
+
+    [JSInvokable]
+    public void CroppedHandler(string dataUrl)
+    {
+        var (binary, ext) = ConvertImageDataUrl(dataUrl);
+
+        SaveFile(binary, $"{Guid.NewGuid()}_cropped.{ext}");
+    }
+
+    private static (byte[] binary, string ext) ConvertImageDataUrl(string dataUrl)
+    {
+        var matchGroups= Regex.Match(dataUrl, @"data:image/(?<file_type>\w+?)(;(?<encode>\w+?))?,(?<data>.+)").Groups;
+        var ext = matchGroups["file_type"].Value;
+        var base64Data = matchGroups["data"].Value;
+        var binary = Convert.FromBase64String(base64Data);
+        return (binary, ext);
+    }
     
+    private void SaveFile(byte[] binary, string fileName)
+    {
+        var uploadDirPath = Path.Combine(_env.WebRootPath, "uploads");
+        var dir = new DirectoryInfo(uploadDirPath);
+        if (!dir.Exists)
+        {
+            dir.Create();
+        }
+
+        var uploadFilePath = Path.Combine(uploadDirPath, fileName);
+        File.WriteAllBytes(uploadFilePath, binary);
+    }
+
+
+
     public async ValueTask DisposeAsync()
     {
+        _dotNetInvokeRef?.Dispose();
+        
         if (_cropperJsModule != null)
         {
             await _cropperJsModule.DisposeAsync().ConfigureAwait(false);

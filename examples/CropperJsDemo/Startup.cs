@@ -26,7 +26,7 @@ namespace CropperJsDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddHubOptions(options => options.MaximumReceiveMessageSize = 1024 * 1024 * 1024);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

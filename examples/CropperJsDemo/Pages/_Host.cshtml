@@ -33,15 +33,15 @@
 
 <script src="_framework/blazor.server.js"></script>
 <script src="js/cropper.min.js"></script>
-<environment include="Development">
-    <!--suppress JSUnresolvedVariable -->
-    <script>
-            Blazor.defaultReconnectionHandler.onConnectionDown = function () {
-                setTimeout(function () {
-                    location.reload();
-                }, 5000);
-            }
-        </script>
-</environment>
+@* <environment include="Development"> *@
+@*     <!--suppress JSUnresolvedVariable --> *@
+@*     <script> *@
+@*             Blazor.defaultReconnectionHandler.onConnectionDown = function () { *@
+@*                 setTimeout(function () { *@
+@*                     location.reload(); *@
+@*                 }, 5000); *@
+@*             } *@
+@*         </script> *@
+@* </environment> *@
 </body>
 </html>
