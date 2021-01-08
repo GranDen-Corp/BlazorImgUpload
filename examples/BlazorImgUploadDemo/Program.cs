@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
 
-namespace BlazorImgUpload
+namespace BlazorImgUploadDemo
 {
     public class Program
     {

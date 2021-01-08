@@ -4,18 +4,18 @@
 
 <div class="d-flex flex-column justify-content-center">
     <div class="p-1">
-        <img @ref="previewImg" class="@DefaultPreviewImgCSS" alt="@_prompt"/>
+        <img @ref="previewImg" class="@PreviewImgCssClass" src="" alt="@_previewImgAltText"/>
     </div>
     <div class="p-1">
         <div class="custom-file">
-            <InputFile id="@fileUploadId"
+            <InputFile id="@_fileUploadId"
                        class="custom-file-input"
                        accept="@AcceptPattern"
                        OnChange="OnInputFileChange"/>
-            <label for="@fileUploadId"
+            <label for="@_fileUploadId"
                    class="custom-file-label"
-                   data-browse="@ButtonLabel">
-                @_prompt
+                   data-browse="@ButtonUiLabel">
+                <span class="d-inline-block text-truncate w-100">@_prompt</span>
             </label>
         </div>
     </div>
@@ -23,52 +23,78 @@
 
 @code {
 
+    /// <summary>
+    /// Initial prompt text when the whole component shown up
+    /// </summary>
     [Parameter]
     public string DefaultPrompt { get; set; } = "Choose file";
 
+    /// <summary>
+    /// Preview Img css class string
+    /// </summary>
     [Parameter]
-    public string DefaultPreviewImgCSS { get; set; } = "img-thumbnail";
+    public string PreviewImgCssClass { get; set; } = "img-thumbnail";
 
+    /// <summary>
+    /// Upload Button display string
+    /// </summary>
     [Parameter]
-    public string ButtonLabel { get; set; } = "Browse";
+    public string ButtonUiLabel { get; set; } = "Browse";
 
+    /// <summary>
+    /// File filter when choosing file via open file dialog of OS
+    /// </summary>
     [Parameter]
     public string AcceptPattern { get; set; } = "image/*";
 
+    /// <summary>
+    /// Upload File selection change event
+    /// </summary>
     [Parameter]
     public EventCallback<InputFileChangeEventArgs> InputFileChanged { get; set; }
 
     private string _prompt;
+    private string _previewImgAltText;
     IJSObjectReference _blobUtilModule;
 
-    Guid fileUploadId = Guid.NewGuid();
+    private readonly string _fileUploadId = Guid.NewGuid().ToString();
     ElementReference previewImg;
 
+    /// <inheritdoc />
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (string.IsNullOrEmpty(_prompt) && !string.IsNullOrEmpty(DefaultPrompt))
+        {
+            _prompt = DefaultPrompt;
+        }
+    }
+
+    /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
+
         if (firstRender)
         {
-            if (string.IsNullOrEmpty(_prompt))
-            {
-                _prompt = DefaultPrompt;
-            }
-            
             var importPath = $"./_content/{typeof(BootstrapImgUpload).Assembly.GetName().Name}";
             _blobUtilModule = await JS.InvokeAsync<IJSObjectReference>("import", $"{importPath}/imgPreviewUtil.js");
 
-            await _blobUtilModule.InvokeVoidAsync("hookFileUploadEvent", previewImg, fileUploadId);
+            await _blobUtilModule.InvokeVoidAsync("hookFileUploadEvent", previewImg, _fileUploadId);
         }
     }
 
     private Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-        _prompt = e.File.Name;
+        var fileName = e.File.Name;
+        _previewImgAltText = _prompt = fileName;
 
         return InputFileChanged.InvokeAsync(e);
     }
 
 
+    /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
         if (_blobUtilModule != null)

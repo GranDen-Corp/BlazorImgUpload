@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "BlazorImgUpload": {
+    "BlazorImgUploadDemo": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

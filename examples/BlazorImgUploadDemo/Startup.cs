@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorImgUpload
+namespace BlazorImgUploadDemo
 {
     public class Startup
     {

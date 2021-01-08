@@ -1,9 +1,11 @@
 ﻿@page "/"
-@namespace BlazorImgUpload.Pages
+@namespace BlazorImgUploadDemo.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @{
     Layout = null;
-    var rclCompName = typeof(GranDen.Blazor.Bootstrap.ImageUpload._Imports).Assembly.GetName().Name;
+    var projectAssemblyName = typeof(Program).Assembly.GetName().Name;
+    var rclCompName = typeof(GranDen.Blazor.Bootstrap.ImageUpload.BootstrapImgUpload).Assembly.GetName().Name;
 }
 
 <!DOCTYPE html>
@@ -15,7 +17,8 @@
     <base href="~/"/>
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css"/>
     <link href="css/site.css" rel="stylesheet"/>
-    <link href="BlazorImgUpload.styles.css" rel="stylesheet"/>
+    @* ReSharper disable once Html.PathError *@
+    <link href="@(projectAssemblyName).styles.css" rel="stylesheet"/>
 </head>
 <body>
     <component type="typeof(App)" render-mode="ServerPrerendered" />
@@ -32,16 +35,17 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
-       
-    <environment include="Development">
-        <!--suppress JSUnresolvedVariable -->
-        <script>
-            Blazor.defaultReconnectionHandler.onConnectionDown = function () {
-                setTimeout(function () {
-                    location.reload();
-                }, 5000);
-            }
-        </script>
-    </environment>
+
+    @* <!--live reload debug -->*@   
+    @* <environment include="Development"> *@
+    @*     <!--suppress JSUnresolvedVariable --> *@
+    @*     <script> *@
+    @*         Blazor.defaultReconnectionHandler.onConnectionDown = function () { *@
+    @*             setTimeout(function () { *@
+    @*                 location.reload(); *@
+    @*             }, 5000); *@
+    @*         } *@
+    @*     </script> *@
+    @* </environment> *@
 </body>
 </html>

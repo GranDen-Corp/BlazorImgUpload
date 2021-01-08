@@ -20,7 +20,7 @@ jobs:
         with:
           # Filepath of the project to be packaged, relative to root of repository
           PROJECT_FILE_PATH: src/GranDen.Blazor.Bootstrap.ImageUpload/GranDen.Blazor.Bootstrap.ImageUpload.csproj
-          VERSION_FILE_PATH: src/Directory.Build.props
+          VERSION_FILE_PATH: src/GranDen.Blazor.Bootstrap.ImageUpload/Directory.Build.props
           VERSION_REGEX: ^\s*<Version Condition=\" \'\$\(Version\)\'==\'\' \">(.*)<\/Version>\s*$
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
           INCLUDE_SYMBOLS: true

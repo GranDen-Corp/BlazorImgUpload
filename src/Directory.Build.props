@@ -1,9 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <Version Condition=" '$(Version)'=='' ">0.0.1-beta</Version>
-    <PackageReleaseNotes>0.0.1-beta : 
-      &#xD;&#xA;Initial release, currently only test on Blazor Server application.
-      &#xD;&#xA;
-    </PackageReleaseNotes>
-  </PropertyGroup>
-</Project>

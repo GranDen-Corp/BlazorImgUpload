@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorImgUpload", "examples\BlazorImgUpload\BlazorImgUpload.csproj", "{646CAA7B-FFDC-4284-A9C5-0172B1DAF3FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorImgUploadDemo", "examples\BlazorImgUploadDemo\BlazorImgUploadDemo.csproj", "{646CAA7B-FFDC-4284-A9C5-0172B1DAF3FF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{A0FCCA18-8FAB-44D1-911F-36202B2DAA97}"
 EndProject
