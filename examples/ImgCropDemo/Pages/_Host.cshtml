@@ -1,8 +1,9 @@
 ﻿@page "/"
-@namespace CropperJsDemo.Pages
+@namespace ImgCropDemo.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
+    var compName = typeof(GranDen.Blazor.Bootstrap.ImageUpload.BootstrapImageCrop).Assembly.GetName().Name;
 }
 
 <!DOCTYPE html>
@@ -10,12 +11,12 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CropperJsDemo</title>
+    <title>ImgCropDemo</title>
     <base href="~/"/>
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/cropper.min.css"/>
     <link href="css/site.css" rel="stylesheet"/>
-    <link href="CropperJsDemo.styles.css" rel="stylesheet"/>
+    <link href="_content/@compName/cropper/cropper.min.css" rel="stylesheet">
+    <link href="ImgCropDemo.styles.css" rel="stylesheet"/>
 </head>
 <body>
 <component type="typeof(App)" render-mode="ServerPrerendered"/>
@@ -32,16 +33,5 @@
 </div>
 
 <script src="_framework/blazor.server.js"></script>
-<script src="js/cropper.min.js"></script>
-@* <environment include="Development"> *@
-@*     <!--suppress JSUnresolvedVariable --> *@
-@*     <script> *@
-@*             Blazor.defaultReconnectionHandler.onConnectionDown = function () { *@
-@*                 setTimeout(function () { *@
-@*                     location.reload(); *@
-@*                 }, 5000); *@
-@*             } *@
-@*         </script> *@
-@* </environment> *@
 </body>
 </html>

@@ -1,7 +1,33 @@
 ﻿let dotNetInvokeReference = null;
 
+let dataImgUrl = null;
+
+function* generateStreamCharGenerator(srcStrng, chunkSize) {
+    for (let i = 0; i < srcStrng.length; i += chunkSize) {
+        let ret = srcStrng.slice(i, i + chunkSize);
+        if (i + chunkSize >= srcStrng.length - 1) {
+            return ret;
+        }
+        yield ret;
+    }
+}
+
 // noinspection JSUnusedGlobalSymbols
-export function initCropper(canvas, cropButton, restoreButton, resultContainer, fileInputId, dotNetRef, maxDimOpt) {
+export function getCropDataImgUrlGenerator(chunkSize) {
+    if (dataImgUrl) {
+        return generateStreamCharGenerator(dataImgUrl, chunkSize);
+    }
+    return null;
+}
+
+import('./cropper/cropper.min.js');
+
+// noinspection JSUnusedGlobalSymbols
+export function initCropper(canvas, cropButton, restoreButton, resultContainer, fileInputId, dotNetRef, maxDimOpt, cropBoxAspectRatio, isCropBoxResizable, cropBoxDragModeOpt) {
+    import('./bs-custom-file-input/bs-custom-file-input.min.js').then((module) => {
+        bsCustomFileInput.init();
+    });
+
     let context = canvas.getContext("2d");
     let cropper = null;
     let previewImg = new Image();
@@ -49,16 +75,29 @@ export function initCropper(canvas, cropButton, restoreButton, resultContainer, 
                     context.drawImage(previewImg,
                         0, 0, previewImg.width, previewImg.height,
                         0, 0, context.canvas.width, context.canvas.height);
+
+                    let cropBoxWidthRatio = NaN;
+                    let cropBoxHeightRatio = NaN;
+
+                    if (cropBoxAspectRatio) {
+                        cropBoxWidthRatio = cropBoxAspectRatio.width;
+                        cropBoxHeightRatio = cropBoxAspectRatio.height;
+                    }
+
+                    let cropBoxDragMode = 'move'
+                    if (cropBoxDragModeOpt) {
+                        cropBoxDragMode = cropBoxDragModeOpt;
+                    }
+
                     cropper = new Cropper(canvas, {
-                        aspectRatio: 369 / 210,
+                        aspectRatio: cropBoxWidthRatio / cropBoxHeightRatio,
                         maxWidth: maxAllowWidth,
                         maxHeight: maxAllowHeight,
                         center: true,
-                        cropBoxResizable: false,
-                        dragMode: 'move'
+                        cropBoxResizable: isCropBoxResizable,
+                        dragMode: cropBoxDragMode
                     });
-
-                };
+                }
                 if (previewImg.src) {
                     URL.revokeObjectURL(previewImg.src);
                 }
@@ -71,14 +110,14 @@ export function initCropper(canvas, cropButton, restoreButton, resultContainer, 
         if (!cropper) {
             return;
         }
+        if (dataImgUrl) {
+            dataImgUrl = null
+        }
 
-        const croppedImageDataURL = cropper.getCroppedCanvas().toDataURL(uploadMineType);
-        const resultImg = new Image();
-        resultImg.src = croppedImageDataURL;
-        resultContainer.append(resultImg);
+        dataImgUrl = cropper.getCroppedCanvas().toDataURL(uploadMineType);
 
         // noinspection JSUnresolvedFunction 
-        dotNetInvokeReference.invokeMethodAsync('CroppedHandler', croppedImageDataURL);
+        dotNetInvokeReference.invokeMethodAsync('CroppedHandler');
 
         // TODO: implement signalR stream functionality as MS <InputFile> component
         // see: https://github.com/dotnet/aspnetcore/blob/master/src/Components/Web/src/Forms/InputFile/SharedBrowserFileStream.cs
@@ -87,11 +126,22 @@ export function initCropper(canvas, cropButton, restoreButton, resultContainer, 
         //     dotNetInvokeReference.invokeMethodAsync('CroppedHandler', croppedFile);
         // }));
 
+        if (resultContainer) {
+            const resultImg = new Image();
+            resultImg.src = dataImgUrl;
+            resultContainer.append(resultImg);
+        }
     });
 
     restoreButton.addEventListener('click', function (e) {
         if (cropper) {
             cropper.reset();
+        }
+        if (dataImgUrl) {
+            dataImgUrl = null
+        }
+        if (!resultContainer) {
+            return;
         }
         let previewImg = resultContainer.firstChild;
         if (previewImg) {

@@ -1,0 +1,54 @@
+﻿@using GranDen.Blazor.Bootstrap.ImageUpload
+@using GranDen.Blazor.Bootstrap.ImageUpload.ImageUtil
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@inject IWebHostEnvironment _env;
+@page "/"
+
+<h1>Blazor Image Cropper Demo</h1>
+
+<br/>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <fieldset class="border rounded p-3">
+                <legend>Bootstrap type file browser</legend>
+                <form>
+                    <div class="form-row align-items-center">
+                        <BootstrapImageCrop ContainerCssClass="d-flex flex-column-reverse justify-content-center"
+                                            DefaultFilePickPrompt="選擇檔案"
+                                            FilePickButtonUiLabel="瀏覽"
+                                            CropButtonUiLabel="裁剪"
+                                            ResetFileButtonUiLabel="重設"
+                                            CroppedImageCreated="OnCropImageCreated"
+                                            ShorCroppedResult="true">
+                        </BootstrapImageCrop>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private void OnCropImageCreated(CropImageCreatedEventArgs e)
+    {
+        var (binary, ext) = DataImageUtil.ExtractImageDataUrl(e.DataImageUrl);
+        SaveFile(binary, $"{Guid.NewGuid()}_cropped.{ext}");
+    }
+
+    private void SaveFile(byte[] binary, string fileName)
+    {
+        var uploadDirPath = Path.Combine(_env.WebRootPath, "uploads");
+        var dir = new DirectoryInfo(uploadDirPath);
+        if (!dir.Exists)
+        {
+            dir.Create();
+        }
+
+        var uploadFilePath = Path.Combine(uploadDirPath, fileName);
+        File.WriteAllBytes(uploadFilePath, binary);
+    }
+}

@@ -1,0 +1,36 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JS;
+@implements IAsyncDisposable;
+
+<div cclass="@ContainerCssClass">
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group mr-2" role="group">
+            <input type="button" class="btn btn-primary" @ref="cropButton" value="@CropButtonUiLabel"/>
+            <input type="button" class="btn btn-secondary" @ref="restoreButton" value="@ResetFileButtonUiLabel"/>
+        </div>
+    </div>
+    <div class="p-1">
+        <div class="custom-file">
+            <InputFile id="@_fileInputId"
+                       class="custom-file-input"
+                       accept="@AcceptPattern"
+                       OnChange="OnInputFileChange"/>
+            <label for="@_fileInputId"
+                   class="custom-file-label"
+                   data-browse="@FilePickButtonUiLabel">
+                <span class="d-inline-block text-truncate w-100">@_prompt</span>
+            </label>
+        </div>
+    </div>
+    <div class="p-1">
+        <canvas @ref="canvas">
+            Your browser does not support the HTML5 canvas element.
+        </canvas>
+    </div>
+    @if (ShorCroppedResult)
+    {
+        <div class="m-1 p-1">
+            <div @ref="resultContainer"></div>
+        </div>
+    }
+</div>

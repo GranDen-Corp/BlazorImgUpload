@@ -30,16 +30,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="GranDen.Blazor.Bootstrap.ImageUpload.xml"/>
+        <None Remove="GranDen.Blazor.Bootstrap.ImageUpload.xml" />
     </ItemGroup>
 
     <ItemGroup>
-        <SupportedPlatform Include="browser"/>
+        <SupportedPlatform Include="browser" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1"/>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     </ItemGroup>
 
 </Project>
