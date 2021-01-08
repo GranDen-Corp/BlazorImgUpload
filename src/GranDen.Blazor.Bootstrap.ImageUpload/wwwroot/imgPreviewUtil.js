@@ -10,7 +10,7 @@ export function hookFileUploadEvent(previewImg, fileUploadRefId) {
         });
     }
 
-    import('./bs-custom-file-input.min.js').then((module) => {
+    import('./bs-custom-file-input/bs-custom-file-input.min.js').then((module) => {
         bsCustomFileInput.init();
     });
 }
