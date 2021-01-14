@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using Microsoft.JSInterop.Implementation;
 
@@ -17,10 +18,45 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         [Inject] private ILogger<BootstrapImageCrop> Logger { get; set; }
 
         /// <summary>
-        /// Outer Container CSS class, default is "d-flex flex-column justify-content-center"
+        /// Outer container CSS class, default is "d-flex flex-column justify-content-center align-items-center align-content-start"
         /// </summary>
         [Parameter]
-        public string ContainerCssClass { get; set; } = "d-flex flex-column justify-content-center";
+        public string ContainerCssClass { get; set; } =
+            "d-flex flex-column justify-content-center align-items-center align-content-start";
+
+        /// <summary>
+        /// Toolbar container CSS class, default is "d-flex flex-row justify-content-center align-items-center align-content-center"
+        /// </summary>
+        [Parameter]
+        public string ToolBarCssClass { get; set; } =
+            "d-flex flex-row justify-content-center align-items-center align-content-center";
+
+        /// <summary>
+        /// Image Part (Cropper.js canvas &amp; Cropped Result view) container CSS class, default is
+        /// "p-1 d-flex flex-column justify-content-center align-items-center align-content-start"
+        /// </summary>
+        [Parameter]
+        public string ImagePartContainerCssClass { get; set; } =
+            "p-1 d-flex flex-column justify-content-center align-items-center align-content-start";
+
+        /// <summary>
+        /// Cropper.js Canvas div container CSS class, default is "p-1 w-100 d-flex justify-content-center align-items-stretch"
+        /// </summary>
+        [Parameter]
+        public string CanvasContainerCssClass { get; set; } = "p-1 d-flex justify-content-center align-items-stretch";
+
+        /// <summary>
+        /// Cropper.js Canvas CSS class
+        /// </summary>
+        [Parameter]
+        public string CropCanvasCssClass { get; set; } = "w-auto h-auto";
+
+        /// <summary>
+        /// Crop result image container CSS class, default is "p-1 d-flex justify-content-center"
+        /// </summary>
+        [Parameter]
+        public string CroppedResultViewContainerCssClass { get; set; } = "p-1 d-flex justify-content-center";
+
 
         /// <summary>
         /// Initial prompt text when the whole component shown up
@@ -94,6 +130,12 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         [Parameter]
         public bool ShorCroppedResult { get; set; } = false;
 
+        /// <summary>
+        /// Manually set result crop image upload chunk size
+        /// </summary>
+        [Parameter]
+        public long? UploadChunkSize { get; set; }
+
 
         private string _prompt;
 
@@ -154,9 +196,10 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         [JSInvokable]
         public async Task<IJSObjectReference> CroppedHandler()
         {
-            const int chunkSize = 1000;
+            const int defaultChunkSize = (int) (32 * 1024 * 0.95); //default signalR message size is 32KB
             var dataUrlJsGenerator =
-                await _cropperJsModule.InvokeAsync<IJSObjectReference>("getCropDataImgUrlGenerator", chunkSize);
+                await _cropperJsModule.InvokeAsync<IJSObjectReference>("getCropDataImgUrlGenerator",
+                    UploadChunkSize.HasValue ? UploadChunkSize : defaultChunkSize);
             if (dataUrlJsGenerator == null)
             {
                 Logger.LogInformation("js data img url generator is null");

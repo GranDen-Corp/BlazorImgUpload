@@ -14,18 +14,19 @@
         <div class="col">
             <fieldset class="border rounded p-3">
                 <legend>Bootstrap type file browser</legend>
-                <form>
-                    <div class="form-row align-items-center">
-                        <BootstrapImageCrop ContainerCssClass="d-flex flex-column-reverse justify-content-center"
-                                            DefaultFilePickPrompt="選擇檔案"
-                                            FilePickButtonUiLabel="瀏覽"
-                                            CropButtonUiLabel="裁剪"
-                                            ResetFileButtonUiLabel="重設"
-                                            CroppedImageCreated="OnCropImageCreated"
-                                            ShorCroppedResult="true">
-                        </BootstrapImageCrop>
-                    </div>
-                </form>
+                <div class="form-row align-items-center">
+                    <BootstrapImageCrop ContainerCssClass="d-flex flex-column-reverse justify-content-center"
+                                        DefaultFilePickPrompt="選擇檔案"
+                                        FilePickButtonUiLabel="瀏覽"
+                                        CropButtonUiLabel="裁剪"
+                                        ResetFileButtonUiLabel="重設"
+                                        MaxDimension="(width: 1200, height: 1200)"
+                                        CropperAspectRatio="(width: 370, height: 210)"
+                                        CropBoxDragOpt="move"
+                                        CroppedImageCreated="OnCropImageCreated"
+                                        ShorCroppedResult="true">
+                    </BootstrapImageCrop>
+                </div>
             </fieldset>
         </div>
     </div>

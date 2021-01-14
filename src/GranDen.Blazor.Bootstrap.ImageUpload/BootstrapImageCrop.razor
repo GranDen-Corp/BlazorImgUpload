@@ -3,13 +3,13 @@
 @implements IAsyncDisposable;
 
 <div cclass="@ContainerCssClass">
-    <div class="btn-toolbar" role="toolbar">
-        <div class="btn-group mr-2" role="group">
-            <input type="button" class="btn btn-primary" @ref="cropButton" value="@CropButtonUiLabel"/>
-            <input type="button" class="btn btn-secondary" @ref="restoreButton" value="@ResetFileButtonUiLabel"/>
+    <div class="@ToolBarCssClass">
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group mr-2" role="group">
+                <input type="button" class="btn btn-primary" @ref="cropButton" value="@CropButtonUiLabel"/>
+                <input type="button" class="btn btn-secondary" @ref="restoreButton" value="@ResetFileButtonUiLabel"/>
+            </div>
         </div>
-    </div>
-    <div class="p-1">
         <div class="custom-file">
             <InputFile id="@_fileInputId"
                        class="custom-file-input"
@@ -22,15 +22,17 @@
             </label>
         </div>
     </div>
-    <div class="p-1">
-        <canvas @ref="canvas">
-            Your browser does not support the HTML5 canvas element.
-        </canvas>
-    </div>
-    @if (ShorCroppedResult)
-    {
-        <div class="m-1 p-1">
-            <div @ref="resultContainer"></div>
+    <div class="@ImagePartContainerCssClass">
+        <div class="@CanvasContainerCssClass">
+            <canvas @ref="canvas" class="@CropCanvasCssClass"> 
+                Your browser does not support the HTML5 canvas element.
+            </canvas>
         </div>
-    }
+        @if (ShorCroppedResult)
+        {
+            <div class="@CroppedResultViewContainerCssClass">
+                <div @ref="resultContainer"></div>
+            </div>
+        }
+    </div>
 </div>

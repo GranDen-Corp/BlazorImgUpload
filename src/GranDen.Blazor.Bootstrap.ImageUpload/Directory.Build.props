@@ -1,9 +1,9 @@
 <Project>
   <PropertyGroup>
-    <Version Condition=" '$(Version)'=='' ">0.0.2-beta</Version>
-    <PackageReleaseNotes>0.0.2-beta : 
-      &#xD;&#xA;1. Fix filename too long break UI problem.
-      &#xD;&#xA;2. Only test on Blazor Server application.
+    <Version Condition=" '$(Version)'=='' ">0.0.3-beta</Version>
+    <PackageReleaseNotes>0.0.3-beta : 
+      &#xD;&#xA;Add Image Cropper component
+      &#xD;&#xA;Note: currently only test on Blazor Server application.
       &#xD;&#xA;
     </PackageReleaseNotes>
   </PropertyGroup>
