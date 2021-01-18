@@ -1,8 +1,9 @@
 <Project>
   <PropertyGroup>
-    <Version Condition=" '$(Version)'=='' ">0.0.3-beta</Version>
-    <PackageReleaseNotes>0.0.3-beta : 
-      &#xD;&#xA;Add Image Cropper component
+    <Version Condition=" '$(Version)'=='' ">0.0.4-beta</Version>
+    <PackageReleaseNotes>0.0.4-beta : 
+      &#xD;&#xA;1. Fix Image Cropper component reset button parameter naming
+      &#xD;&#xA;2. Add Image Cropper component reset button event handler
       &#xD;&#xA;Note: currently only test on Blazor Server application.
       &#xD;&#xA;
     </PackageReleaseNotes>

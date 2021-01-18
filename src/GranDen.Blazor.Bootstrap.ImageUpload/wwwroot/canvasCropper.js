@@ -23,7 +23,7 @@ export function getCropDataImgUrlGenerator(chunkSize) {
 import('./cropper/cropper.min.js');
 
 // noinspection JSUnusedGlobalSymbols
-export function initCropper(canvas, cropButton, restoreButton, resultContainer, fileInputId, dotNetRef, maxDimOpt, cropBoxAspectRatio, isCropBoxResizable, cropBoxDragModeOpt) {
+export function initCropper(canvas, cropButton, resetCropButton, resultContainer, fileInputId, dotNetRef, maxDimOpt, cropBoxAspectRatio, isCropBoxResizable, cropBoxDragModeOpt) {
     import('./bs-custom-file-input/bs-custom-file-input.min.js').then((module) => {
         bsCustomFileInput.init();
     });
@@ -116,8 +116,10 @@ export function initCropper(canvas, cropButton, restoreButton, resultContainer, 
 
         dataImgUrl = cropper.getCroppedCanvas().toDataURL(uploadMineType);
 
-        // noinspection JSUnresolvedFunction 
-        dotNetInvokeReference.invokeMethodAsync('CroppedHandler');
+        if(dotNetInvokeReference){
+            // noinspection JSUnresolvedFunction
+            dotNetInvokeReference.invokeMethodAsync('CroppedHandler');
+        }
 
         // TODO: implement signalR stream functionality as MS <InputFile> component
         // see: https://github.com/dotnet/aspnetcore/blob/master/src/Components/Web/src/Forms/InputFile/SharedBrowserFileStream.cs
@@ -133,7 +135,7 @@ export function initCropper(canvas, cropButton, restoreButton, resultContainer, 
         }
     });
 
-    restoreButton.addEventListener('click', function (e) {
+    resetCropButton.addEventListener('click', function (e) {
         if (cropper) {
             cropper.reset();
         }

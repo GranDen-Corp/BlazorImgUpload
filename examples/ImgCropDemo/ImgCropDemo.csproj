@@ -5,6 +5,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Readme.md" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\src\GranDen.Blazor.Bootstrap.ImageUpload\GranDen.Blazor.Bootstrap.ImageUpload.csproj" />
     </ItemGroup>
 

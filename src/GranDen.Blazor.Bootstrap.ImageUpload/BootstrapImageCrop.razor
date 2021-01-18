@@ -5,9 +5,13 @@
 <div cclass="@ContainerCssClass">
     <div class="@ToolBarCssClass">
         <div class="btn-toolbar" role="toolbar">
-            <div class="btn-group mr-2" role="group">
-                <input type="button" class="btn btn-primary" @ref="cropButton" value="@CropButtonUiLabel"/>
-                <input type="button" class="btn btn-secondary" @ref="restoreButton" value="@ResetFileButtonUiLabel"/>
+            <div class="btn-group mr-1" role="group">
+                <button class="btn btn-primary" @ref="cropButton">
+                    <span class="text-center text-nowrap">@CropButtonUiLabel</span>
+                </button>
+                <button class="btn btn-secondary" @ref="resetCropButton" @onclick="ResetCropButtonClick">
+                    <span class="text-center text-nowrap">@ResetCropButtonUiLabel</span>
+                </button>
             </div>
         </div>
         <div class="custom-file">
@@ -24,11 +28,11 @@
     </div>
     <div class="@ImagePartContainerCssClass">
         <div class="@CanvasContainerCssClass">
-            <canvas @ref="canvas" class="@CropCanvasCssClass"> 
+            <canvas @ref="canvas" class="@CropCanvasCssClass">
                 Your browser does not support the HTML5 canvas element.
             </canvas>
         </div>
-        @if (ShorCroppedResult)
+        @if (ShowCroppedResult)
         {
             <div class="@CroppedResultViewContainerCssClass">
                 <div @ref="resultContainer"></div>

@@ -2,6 +2,7 @@
 @using GranDen.Blazor.Bootstrap.ImageUpload.ImageUtil
 @using System.IO
 @using Microsoft.AspNetCore.Hosting
+@using Serilog
 @inject IWebHostEnvironment _env;
 @page "/"
 
@@ -19,12 +20,13 @@
                                         DefaultFilePickPrompt="選擇檔案"
                                         FilePickButtonUiLabel="瀏覽"
                                         CropButtonUiLabel="裁剪"
-                                        ResetFileButtonUiLabel="重設"
+                                        ResetCropButtonUiLabel="重設"
                                         MaxDimension="(width: 1200, height: 1200)"
                                         CropperAspectRatio="(width: 370, height: 210)"
                                         CropBoxDragOpt="move"
                                         CroppedImageCreated="OnCropImageCreated"
-                                        ShorCroppedResult="true">
+                                        ResetCropButtonClicked="OnResetCropButtonClicked"
+                                        ShowCroppedResult="true">
                     </BootstrapImageCrop>
                 </div>
             </fieldset>
@@ -51,5 +53,10 @@
 
         var uploadFilePath = Path.Combine(uploadDirPath, fileName);
         File.WriteAllBytes(uploadFilePath, binary);
+    }
+
+    private void OnResetCropButtonClicked(MouseEventArgs e)
+    {
+        Log.Information("Reset Crop Button clicked");
     }
 }

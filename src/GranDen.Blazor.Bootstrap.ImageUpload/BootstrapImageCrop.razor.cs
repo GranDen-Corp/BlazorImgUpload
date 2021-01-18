@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
@@ -80,7 +81,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         /// Reset Crop Button display string
         /// </summary>
         [Parameter]
-        public string ResetFileButtonUiLabel { get; set; } = "Browse";
+        public string ResetCropButtonUiLabel { get; set; } = "Browse";
 
         /// <summary>
         /// file filter when choosing file via open file dialog of operating system, default is "image/*"
@@ -125,13 +126,19 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         public EventCallback<CropImageCreatedEventArgs> CroppedImageCreated { get; set; }
 
         /// <summary>
+        /// Reset Crop Button click event
+        /// </summary>
+        [Parameter]
+        public EventCallback<MouseEventArgs> ResetCropButtonClicked { get; set; }
+
+        /// <summary>
         /// Toggle to show/hide cropped resulting image
         /// </summary>
         [Parameter]
-        public bool ShorCroppedResult { get; set; } = false;
+        public bool ShowCroppedResult { get; set; } = false;
 
         /// <summary>
-        /// Manually set result crop image upload chunk size
+        /// Provide a parameter to Manually set result crop image upload chunk size
         /// </summary>
         [Parameter]
         public long? UploadChunkSize { get; set; }
@@ -140,7 +147,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         private string _prompt;
 
         private ElementReference cropButton;
-        private ElementReference restoreButton;
+        private ElementReference resetCropButton;
         private ElementReference canvas;
         private ElementReference resultContainer;
         private readonly string _fileInputId = Guid.NewGuid().ToString();
@@ -162,8 +169,8 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
 
                 if (double.IsNaN(CropperAspectRatio.width) || double.IsNaN(CropperAspectRatio.height))
                 {
-                    await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, restoreButton,
-                        ShorCroppedResult ? resultContainer : null,
+                    await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, resetCropButton,
+                        ShowCroppedResult ? resultContainer : null,
                         _fileInputId,
                         _dotNetInvokeRef,
                         new {Width = MaxDimension.width, Height = MaxDimension.height},
@@ -172,8 +179,8 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
                 }
                 else
                 {
-                    await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, restoreButton,
-                        ShorCroppedResult ? resultContainer : null,
+                    await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, resetCropButton,
+                        ShowCroppedResult ? resultContainer : null,
                         _fileInputId,
                         _dotNetInvokeRef,
                         new {Width = MaxDimension.width, Height = MaxDimension.height},
@@ -232,6 +239,11 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             } while (!finished);
 
             return stringBuilder.ToString();
+        }
+
+        private async void ResetCropButtonClick(MouseEventArgs e)
+        {
+            await ResetCropButtonClicked.InvokeAsync(e);
         }
 
         /// <inheritdoc />
