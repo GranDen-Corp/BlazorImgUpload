@@ -1,0 +1,23 @@
+/*noinspection CssInvalidPseudoSelector*/
+::deep .img-min-size {
+    min-width: 100px;
+    min-height: 100px;
+}
+
+/*noinspection CssInvalidPseudoSelector*/
+::deep .img-max-size {
+    max-width: 500px;
+    max-height: 500px;
+}
+
+/*noinspection CssInvalidPseudoSelector*/
+::deep .vertical-scrollbar {
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+/*noinspection CssInvalidPseudoSelector*/
+::deep .horizontal-scrollbar {
+    overflow-x: auto;
+    max-width: 500px;
+}

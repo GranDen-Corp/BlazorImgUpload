@@ -5,11 +5,11 @@
 <div class="@ContainerCssClass">
     @if (ShowPreview)
     {
-        <div class="p-1">
-            <img @ref="previewImg" class="@PreviewImgCssClass" src="" alt="@_previewImgAltText"/>
+        <div class="@PreviewContainerCssClass">
+            <img @ref="previewImg" class="@PreviewImgCssClass" src="@PreviewImgSrc" alt="@_previewImgAltText"/>
         </div>
     }
-    <div class="p-1">
+    <div class="@FileBarContainerCssClass">
         <div class="custom-file">
             <InputFile id="@_fileUploadId"
                        class="custom-file-input"
@@ -18,7 +18,7 @@
             <label for="@_fileUploadId"
                    class="custom-file-label"
                    data-browse="@ButtonUiLabel">
-                <span class="d-inline-block text-truncate w-100">@_prompt</span>
+                <span class="text-center text-nowrap">@_prompt</span>
             </label>
         </div>
     </div>

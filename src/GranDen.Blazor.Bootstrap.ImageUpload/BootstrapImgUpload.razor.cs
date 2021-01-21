@@ -30,6 +30,18 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         public bool ShowPreview { get; set; }
 
         /// <summary>
+        /// The src attribute value of the &lt;img&gt; used in preview
+        /// </summary>
+        [Parameter]
+        public string PreviewImgSrc { get; set; }
+
+        /// <summary>
+        /// The outside &lt;div&gt; container Css class, default is <code>p-1</code>
+        /// </summary>
+        [Parameter]
+        public string PreviewContainerCssClass { get; set; } = "p-1";
+
+        /// <summary>
         /// Preview Img css class string
         /// </summary>
         [Parameter]
@@ -46,6 +58,12 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         /// </summary>
         [Parameter]
         public string AcceptPattern { get; set; } = "image/*";
+
+        /// <summary>
+        /// The &lt;div&gt; container of Bootstrap File Browser UI, default is <code>p-1</code>
+        /// </summary>
+        [Parameter]
+        public string FileBarContainerCssClass { get; set; } = "p-1";
 
         /// <summary>
         /// Upload File selection change event
