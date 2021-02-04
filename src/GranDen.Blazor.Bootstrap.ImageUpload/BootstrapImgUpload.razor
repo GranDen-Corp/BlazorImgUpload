@@ -1,12 +1,13 @@
 ﻿@using Microsoft.JSInterop
-@inject IJSRuntime JS;
-@implements IAsyncDisposable;
+@inject IJSRuntime JS
+@implements IDisposable
+@implements IAsyncDisposable
 
 <div class="@ContainerCssClass">
     @if (ShowPreview)
     {
         <div class="@PreviewContainerCssClass">
-            <img @ref="previewImg" class="@PreviewImgCssClass" src="@PreviewImgSrc" alt="@_previewImgAltText"/>
+            <img @ref="previewImg" class="@PreviewImgCssClass" src="@PreviewImgSrc" alt="@_previewImgAltText" />
         </div>
     }
     <div class="@FileBarContainerCssClass">
@@ -14,7 +15,7 @@
             <InputFile id="@_fileUploadId"
                        class="custom-file-input"
                        accept="@AcceptPattern"
-                       OnChange="OnInputFileChange"/>
+                       OnChange="OnInputFileChange" />
             <label for="@_fileUploadId"
                    class="custom-file-label"
                    data-browse="@ButtonUiLabel">

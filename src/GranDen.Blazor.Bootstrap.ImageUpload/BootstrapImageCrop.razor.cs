@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
-using Microsoft.JSInterop.Implementation;
 
 namespace GranDen.Blazor.Bootstrap.ImageUpload
 {
@@ -247,14 +245,52 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         }
 
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        public void Dispose()
         {
-            _dotNetInvokeRef?.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
 
+        /// <summary>
+        /// Actual dispose object implementation
+        /// </summary>
+        /// <returns></returns>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _dotNetInvokeRef?.Dispose();
+                (_cropperJsModule as IDisposable)?.Dispose();
+            }
+
+            _dotNetInvokeRef = null;
+            _cropperJsModule = null;
+        }
+
+        /// <summary>
+        /// Actual async dispose object implementation
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async ValueTask DisposeAsyncCore()
+        {
             if (_cropperJsModule != null)
             {
                 await _cropperJsModule.DisposeAsync().ConfigureAwait(false);
             }
+
+            _dotNetInvokeRef?.Dispose();
+            _dotNetInvokeRef = null;
+
+            _cropperJsModule = null;
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore();
+
+            Dispose(disposing: false);
+            GC.SuppressFinalize(this);
         }
     }
 }

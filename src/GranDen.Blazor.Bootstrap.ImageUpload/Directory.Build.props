@@ -1,9 +1,8 @@
 <Project>
   <PropertyGroup>
-    <Version Condition=" '$(Version)'=='' ">0.0.5-beta</Version>
-    <PackageReleaseNotes>0.0.5-beta : 
-      &#xD;&#xA;1. Add two Image Upload component CSS style parameters.
-      &#xD;&#xA;2. Add Image Upload component preview immage url parameter.
+    <Version Condition=" '$(Version)'=='' ">0.0.6-beta</Version>
+    <PackageReleaseNotes>0.0.6-beta : 
+      &#xD;&#xA;1. Try to correctly implement object DisposeAsync() method.
       &#xD;&#xA;Note: currently only test on Blazor Server application.
       &#xD;&#xA;
     </PackageReleaseNotes>

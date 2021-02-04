@@ -73,10 +73,11 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
 
         private string _prompt;
         private string _previewImgAltText;
-        IJSObjectReference _blobUtilModule;
 
         private readonly string _fileUploadId = Guid.NewGuid().ToString();
         ElementReference previewImg;
+
+        IJSObjectReference _blobUtilModule;
 
         /// <inheritdoc />
         protected override void OnInitialized()
@@ -118,14 +119,48 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             return InputFileChanged.InvokeAsync(e);
         }
 
-
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Actual dispose object implementation
+        /// </summary>
+        /// <returns></returns>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                (_blobUtilModule as IDisposable)?.Dispose();
+            }
+
+            _blobUtilModule = null;
+        }
+
+        /// <summary>
+        /// Actual async dispose object implementation
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async ValueTask DisposeAsyncCore()
         {
             if (_blobUtilModule != null)
             {
                 await _blobUtilModule.DisposeAsync().ConfigureAwait(false);
             }
+
+            _blobUtilModule = null;
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore();
+
+            Dispose(disposing: false);
+            GC.SuppressFinalize(this);
         }
     }
 }
