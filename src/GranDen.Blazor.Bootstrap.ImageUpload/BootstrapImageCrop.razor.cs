@@ -149,11 +149,8 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         private ElementReference canvas;
         private ElementReference resultContainer;
         private readonly string _fileInputId = Guid.NewGuid().ToString();
-
-        IJSObjectReference _cropperJsModule;
-        DotNetObjectReference<BootstrapImageCrop> _dotNetInvokeRef;
-
-        private readonly Guid _fileUploadId = Guid.NewGuid();
+        private IJSObjectReference _cropperJsModule;
+        private DotNetObjectReference<BootstrapImageCrop> _dotNetInvokeRef;
 
         /// <inheritdoc />
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -171,7 +168,8 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
                         ShowCroppedResult ? resultContainer : null,
                         _fileInputId,
                         _dotNetInvokeRef,
-                        new {Width = MaxDimension.width, Height = MaxDimension.height},
+                        // ReSharper disable once SimilarAnonymousTypeNearby
+                        new { Width = MaxDimension.width, Height = MaxDimension.height },
                         null,
                         CropBoxResizable, CropBoxDragOpt);
                 }
@@ -181,8 +179,10 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
                         ShowCroppedResult ? resultContainer : null,
                         _fileInputId,
                         _dotNetInvokeRef,
-                        new {Width = MaxDimension.width, Height = MaxDimension.height},
-                        new {Width = CropperAspectRatio.width, Height = CropperAspectRatio.height},
+                        // ReSharper disable once SimilarAnonymousTypeNearby
+                        new { Width = MaxDimension.width, Height = MaxDimension.height },
+                        // ReSharper disable once SimilarAnonymousTypeNearby
+                        new { Width = CropperAspectRatio.width, Height = CropperAspectRatio.height },
                         CropBoxResizable, CropBoxDragOpt);
                 }
             }
@@ -195,25 +195,23 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             return InputFileChanged.InvokeAsync(e);
         }
 
-        /// <summary>
-        /// Collect Cropped Image event handler
-        /// </summary>
+        /// <summary>Collect Cropped Image event handler</summary>
         [JSInvokable]
         public async Task<IJSObjectReference> CroppedHandler()
         {
             const int defaultChunkSize = (int) (32 * 1024 * 0.95); //default signalR message size is 32KB
             var dataUrlJsGenerator =
                 await _cropperJsModule.InvokeAsync<IJSObjectReference>("getCropDataImgUrlGenerator",
-                    UploadChunkSize.HasValue ? UploadChunkSize : defaultChunkSize);
+                    UploadChunkSize ?? defaultChunkSize);
             if (dataUrlJsGenerator == null)
             {
-                Logger.LogInformation("js data img url generator is null");
+                Logger.LogError("js data img url generator is null");
                 return null;
             }
 
             var dataUrl = await FetchDataUrl(dataUrlJsGenerator);
-            Logger.LogInformation("data img url fetched, total size = {0}", dataUrl.Length);
-            await CroppedImageCreated.InvokeAsync(new CropImageCreatedEventArgs {DataImageUrl = dataUrl});
+            Logger.LogDebug("Data Img Uri fetched, total size = {0}", dataUrl.Length);
+            await CroppedImageCreated.InvokeAsync(new CropImageCreatedEventArgs { DataImageUrl = dataUrl });
 
             return dataUrlJsGenerator;
         }
