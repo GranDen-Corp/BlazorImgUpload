@@ -14,7 +14,9 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
     /// </summary>
     public partial class BootstrapImageCrop
     {
-        [Inject] private ILogger<BootstrapImageCrop> Logger { get; set; }
+        [Inject] private ILogger<BootstrapImageCrop> _logger { get; set; }
+
+        #region Component Parameters
 
         /// <summary>
         /// Outer container CSS class, default is "d-flex flex-column justify-content-center align-items-center align-content-start"
@@ -141,9 +143,9 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         [Parameter]
         public long? UploadChunkSize { get; set; }
 
+        #endregion
 
         private string _prompt;
-
         private ElementReference cropButton;
         private ElementReference resetCropButton;
         private ElementReference canvas;
@@ -152,8 +154,11 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         private IJSObjectReference _cropperJsModule;
         private DotNetObjectReference<BootstrapImageCrop> _dotNetInvokeRef;
 
+        private readonly string DisposeTimeoutLogTemplate =
+            $"Disposing JSInterop object {nameof(_cropperJsModule)} in {nameof(BootstrapImageCrop)} component timeout";
+
         /// <inheritdoc />
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
@@ -169,7 +174,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
                         _fileInputId,
                         _dotNetInvokeRef,
                         // ReSharper disable once SimilarAnonymousTypeNearby
-                        new { Width = MaxDimension.width, Height = MaxDimension.height },
+                        new {Width = MaxDimension.width, Height = MaxDimension.height},
                         null,
                         CropBoxResizable, CropBoxDragOpt);
                 }
@@ -180,9 +185,9 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
                         _fileInputId,
                         _dotNetInvokeRef,
                         // ReSharper disable once SimilarAnonymousTypeNearby
-                        new { Width = MaxDimension.width, Height = MaxDimension.height },
+                        new {Width = MaxDimension.width, Height = MaxDimension.height},
                         // ReSharper disable once SimilarAnonymousTypeNearby
-                        new { Width = CropperAspectRatio.width, Height = CropperAspectRatio.height },
+                        new {Width = CropperAspectRatio.width, Height = CropperAspectRatio.height},
                         CropBoxResizable, CropBoxDragOpt);
                 }
             }
@@ -205,13 +210,13 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
                     UploadChunkSize ?? defaultChunkSize);
             if (dataUrlJsGenerator == null)
             {
-                Logger.LogError("js data img url generator is null");
+                _logger.LogError("js data img url generator is null");
                 return null;
             }
 
             var dataUrl = await FetchDataUrl(dataUrlJsGenerator);
-            Logger.LogDebug("Data Img Uri fetched, total size = {0}", dataUrl.Length);
-            await CroppedImageCreated.InvokeAsync(new CropImageCreatedEventArgs { DataImageUrl = dataUrl });
+            _logger.LogDebug("Data Img Uri fetched, total size = {0}", dataUrl.Length);
+            await CroppedImageCreated.InvokeAsync(new CropImageCreatedEventArgs {DataImageUrl = dataUrl});
 
             return dataUrlJsGenerator;
         }
@@ -223,7 +228,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             public bool Done { get; set; }
         }
 
-        private static async ValueTask<string> FetchDataUrl(IJSObjectReference dataUrlJsGenerator)
+        private async static ValueTask<string> FetchDataUrl(IJSObjectReference dataUrlJsGenerator)
         {
             var stringBuilder = new StringBuilder();
             bool finished;
@@ -242,6 +247,8 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             await ResetCropButtonClicked.InvokeAsync(e);
         }
 
+        #region Async Dispose Pattern implementation
+
         /// <inheritdoc />
         public void Dispose()
         {
@@ -250,7 +257,8 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         }
 
         /// <summary>
-        /// Actual dispose object implementation
+        /// Actual dispose object implementation,
+        /// see: https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync#implement-the-async-dispose-pattern
         /// </summary>
         /// <returns></returns>
         protected virtual void Dispose(bool disposing)
@@ -258,7 +266,25 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             if (disposing)
             {
                 _dotNetInvokeRef?.Dispose();
-                (_cropperJsModule as IDisposable)?.Dispose();
+                switch (_cropperJsModule)
+                {
+                    case IDisposable disposable:
+                        disposable.Dispose();
+                        break;
+                    case IAsyncDisposable asyncDisposable:
+                    {
+                        try
+                        {
+                            asyncDisposable.DisposeAsync().AsTask().RunSynchronously();
+                        }
+                        catch (OperationCanceledException ex)
+                        {
+                            _logger.LogDebug(ex, DisposeTimeoutLogTemplate);
+                        }
+
+                        break;
+                    }
+                }
             }
 
             _dotNetInvokeRef = null;
@@ -269,15 +295,22 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         /// Actual async dispose object implementation
         /// </summary>
         /// <returns></returns>
-        protected virtual async ValueTask DisposeAsyncCore()
+        protected async virtual ValueTask DisposeAsyncCore()
         {
-            if (_cropperJsModule != null)
-            {
-                await _cropperJsModule.DisposeAsync().ConfigureAwait(false);
-            }
-
             _dotNetInvokeRef?.Dispose();
             _dotNetInvokeRef = null;
+
+            if (_cropperJsModule != null)
+            {
+                try
+                {
+                    await _cropperJsModule.DisposeAsync().ConfigureAwait(false);
+                }
+                catch (OperationCanceledException ex)
+                {
+                    _logger.LogDebug(ex, DisposeTimeoutLogTemplate);
+                }
+            }
 
             _cropperJsModule = null;
         }
@@ -290,5 +323,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             Dispose(disposing: false);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }

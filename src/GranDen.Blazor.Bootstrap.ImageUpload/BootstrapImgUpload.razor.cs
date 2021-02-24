@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 namespace GranDen.Blazor.Bootstrap.ImageUpload
@@ -11,6 +12,10 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
     /// </summary>
     public partial class BootstrapImgUpload
     {
+        [Inject] private ILogger<BootstrapImgUpload> Logger { get; set; }
+
+        #region Component Parameters
+
         /// <summary>
         /// Initial prompt text when the whole component shown up
         /// </summary>
@@ -71,13 +76,18 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         [Parameter]
         public EventCallback<InputFileChangeEventArgs> InputFileChanged { get; set; }
 
+        #endregion
+
         private string _prompt;
         private string _previewImgAltText;
 
         private readonly string _fileUploadId = Guid.NewGuid().ToString();
-        ElementReference previewImg;
+        private ElementReference previewImg;
 
-        IJSObjectReference _blobUtilModule;
+        private IJSObjectReference _blobUtilModule;
+
+        private readonly string DisposeTimeoutLogTemplate =
+            $"Disposing JSInterop object {nameof(_blobUtilModule)} in {nameof(BootstrapImgUpload)} component timeout";
 
         /// <inheritdoc />
         protected override void OnInitialized()
@@ -91,7 +101,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         }
 
         /// <inheritdoc />
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
 
@@ -119,6 +129,8 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             return InputFileChanged.InvokeAsync(e);
         }
 
+        #region Dispose Pattern implementation
+
         /// <inheritdoc />
         public void Dispose()
         {
@@ -134,21 +146,47 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         {
             if (disposing)
             {
-                (_blobUtilModule as IDisposable)?.Dispose();
+                switch (_blobUtilModule)
+                {
+                    case IDisposable disposable:
+                        disposable.Dispose();
+                        break;
+                    case IAsyncDisposable asyncDisposable:
+                    {
+                        try
+                        {
+                            asyncDisposable.DisposeAsync().AsTask().RunSynchronously();
+                        }
+                        catch (OperationCanceledException ex)
+                        {
+                            Logger.LogDebug(ex, DisposeTimeoutLogTemplate);
+                        }
+
+                        break;
+                    }
+                }
             }
 
             _blobUtilModule = null;
         }
 
         /// <summary>
-        /// Actual async dispose object implementation
+        /// Actual async dispose object implementation,
+        /// see: https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync#implement-the-async-dispose-pattern
         /// </summary>
         /// <returns></returns>
-        protected virtual async ValueTask DisposeAsyncCore()
+        protected async virtual ValueTask DisposeAsyncCore()
         {
             if (_blobUtilModule != null)
             {
-                await _blobUtilModule.DisposeAsync().ConfigureAwait(false);
+                try
+                {
+                    await _blobUtilModule.DisposeAsync().ConfigureAwait(false);
+                }
+                catch (OperationCanceledException ex)
+                {
+                    Logger.LogDebug(ex, DisposeTimeoutLogTemplate);
+                }
             }
 
             _blobUtilModule = null;
@@ -162,5 +200,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
             Dispose(disposing: false);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }

@@ -1,9 +1,8 @@
 <Project>
   <PropertyGroup>
-    <Version Condition=" '$(Version)'=='' ">0.0.7-beta</Version>
-    <PackageReleaseNotes>0.0.7-beta : 
-      &#xD;&#xA;1. Update nuget packages.
-      &#xD;&#xA;2. Refine log.
+    <Version Condition=" '$(Version)'=='' ">0.0.8-beta</Version>
+    <PackageReleaseNotes>0.0.8-beta : 
+      &#xD;&#xA;Correctly implment Async Dispose pattern.
       &#xD;&#xA;Note: currently only test on Blazor Server application.
       &#xD;&#xA;
     </PackageReleaseNotes>
