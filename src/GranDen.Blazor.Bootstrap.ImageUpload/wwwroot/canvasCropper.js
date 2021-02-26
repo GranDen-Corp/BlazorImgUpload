@@ -25,6 +25,7 @@ import('./cropper/cropper.min.js');
 // noinspection JSUnusedGlobalSymbols
 export function initCropper(canvas, cropButton, resetCropButton, resultContainer, fileInputId, dotNetRef, maxDimOpt, cropBoxAspectRatio, isCropBoxResizable, cropBoxDragModeOpt) {
     import('./bs-custom-file-input/bs-custom-file-input.min.js').then((module) => {
+        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         bsCustomFileInput.init();
     });
 

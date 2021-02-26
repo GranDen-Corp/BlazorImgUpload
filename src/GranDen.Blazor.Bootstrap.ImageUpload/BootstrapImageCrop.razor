@@ -28,16 +28,25 @@
         </div>
     </div>
     <div class="@ImagePartContainerCssClass">
-        <div class="@CanvasContainerCssClass">
-            <canvas @ref="canvas" class="@CropCanvasCssClass">
-                Your browser does not support the HTML5 canvas element.
-            </canvas>
-        </div>
-        @if (ShowCroppedResult)
+
+        @if (ImagePartContainer == null)
         {
-            <div class="@CroppedResultViewContainerCssClass">
-                <div @ref="resultContainer"></div>
+            @if (ShowCroppedResult)
+            {
+                <div class="@CroppedResultViewContainerCssClass">
+                    <div @ref="resultContainer"></div>
+                </div>
+            }
+            <div class="@CanvasContainerCssClass">
+                <canvas @ref="cropperJsCanvas" class="@CropCanvasCssClass">
+                    Your browser does not support the HTML5 canvas element.
+                </canvas>
             </div>
         }
+        else
+        {
+            @ImagePartContainer
+        }
+
     </div>
 </div>

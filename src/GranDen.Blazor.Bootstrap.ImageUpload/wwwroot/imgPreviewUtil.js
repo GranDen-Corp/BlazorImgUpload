@@ -11,6 +11,7 @@ export function hookFileUploadEvent(previewImg, fileUploadRefId) {
     }
 
     import('./bs-custom-file-input/bs-custom-file-input.min.js').then((module) => {
+        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
         bsCustomFileInput.init();
     });
 }

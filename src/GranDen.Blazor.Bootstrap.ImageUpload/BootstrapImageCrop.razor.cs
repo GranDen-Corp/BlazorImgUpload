@@ -142,13 +142,19 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
         /// </summary>
         [Parameter]
         public long? UploadChunkSize { get; set; }
+        
+        /// <summary>
+        /// For customize the image crop canvas &amp; preview result portion
+        /// </summary>
+        [Parameter]
+        public RenderFragment ImagePartContainer { get; set; }
 
         #endregion
 
         private string _prompt;
         private ElementReference cropButton;
         private ElementReference resetCropButton;
-        private ElementReference canvas;
+        private ElementReference cropperJsCanvas;
         private ElementReference resultContainer;
         private readonly string _fileInputId = Guid.NewGuid().ToString();
         private IJSObjectReference _cropperJsModule;
@@ -169,7 +175,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
 
                 if (double.IsNaN(CropperAspectRatio.width) || double.IsNaN(CropperAspectRatio.height))
                 {
-                    await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, resetCropButton,
+                    await _cropperJsModule.InvokeVoidAsync("initCropper", cropperJsCanvas, cropButton, resetCropButton,
                         ShowCroppedResult ? resultContainer : null,
                         _fileInputId,
                         _dotNetInvokeRef,
@@ -180,7 +186,7 @@ namespace GranDen.Blazor.Bootstrap.ImageUpload
                 }
                 else
                 {
-                    await _cropperJsModule.InvokeVoidAsync("initCropper", canvas, cropButton, resetCropButton,
+                    await _cropperJsModule.InvokeVoidAsync("initCropper", cropperJsCanvas, cropButton, resetCropButton,
                         ShowCroppedResult ? resultContainer : null,
                         _fileInputId,
                         _dotNetInvokeRef,
