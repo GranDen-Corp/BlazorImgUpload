@@ -9,7 +9,7 @@
         <RepositoryUrl>https://github.com/GranDen-Corp/BlazorImgUpload</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageProjectUrl>https://github.com/GranDen-Corp/BlazorImgUpload</PackageProjectUrl>
-        <IncludeSymbols>true</IncludeSymbols>
+        <IncludeSymbols>false</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <PackageTags>blazor ui</PackageTags>
         <Company>GranDen Inc.</Company>
