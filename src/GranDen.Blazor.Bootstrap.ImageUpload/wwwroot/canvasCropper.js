@@ -141,14 +141,18 @@ export function initCropper(canvas, cropButton, resetCropButton, resultContainer
             cropper.reset();
         }
         if (dataImgUrl) {
-            dataImgUrl = null
+            dataImgUrl = null;
         }
         if (!resultContainer) {
             return;
         }
-        let previewImg = resultContainer.firstChild;
-        if (previewImg) {
-            previewImg.remove();
+        const preview = resultContainer.firstChild;
+        if (preview) {
+            preview.remove();
+        }
+
+        if (fileInput && fileInput.value) {
+            fileInput.value = null;
         }
     });
 
